@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Slf4j(topic = "LoggingFilter")
-@Component
+//@Component
 @Order(1) //순서를 정해주는 @Annotation 인증인가를 처리하는 필터보다 먼저 실행시키기위해 1을 부여
 public class LoggingFilter implements Filter {
     @Override
