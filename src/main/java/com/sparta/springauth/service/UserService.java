@@ -7,12 +7,11 @@ import com.sparta.springauth.entity.UserRoleEnum;
 import com.sparta.springauth.jwt.JwtUtil;
 import com.sparta.springauth.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-@RequiredArgsConstructor
+
 @Service
 public class UserService {
 
@@ -20,8 +19,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+    }
 
-    // ADMIN_TOKEN 일반사용자인 관리자인지를 구분하기위해 사용함
+    // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     public void signup(SignupRequestDto requestDto) {
@@ -59,47 +63,18 @@ public class UserService {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
 
-        // 사용자가 DB에 존재하는지 확인
-
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new IllegalArgumentException("등록된 사용자가 없습니다.")
+        // 사용자 확인
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
 
-        // 패스워드 확인 matches(평문, 암호화된 저장 password)
+        // 비밀번호 확인
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // JWT 생성 및 쿠키 저장 후 Response 개체에 추가
+        // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
         String token = jwtUtil.createToken(user.getUsername(), user.getRole());
         jwtUtil.addJwtToCookie(token, res);
-
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
