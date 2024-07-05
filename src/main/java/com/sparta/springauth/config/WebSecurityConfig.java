@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity // Spring Security 지원을 가능하게 함
 @RequiredArgsConstructor
+@EnableGlobalMethodSecurity(securedEnabled = true) //secured 애너테이션 활성화
 public class WebSecurityConfig {
 
     private final JwtUtil jwtUtil;
@@ -69,6 +70,12 @@ public class WebSecurityConfig {
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        //접근불가 페이지
+        http.exceptionHandling((exceptionHandling) ->
+                exceptionHandling
+                        .accessDeniedPage("/fobidden.html"));
+//                거절당했을때 포비든 페이지로 이동해줘
 
         return http.build();
     }
