@@ -26,11 +26,12 @@ public class WebSecurityConfig {
         // 로그인 사용
         http.formLogin((formLogin) ->
                 formLogin
+                        //Controller Mapping URI값이 들어가는거임
                         // 로그인 View 제공 (GET /api/user/login-page)
                         .loginPage("/api/user/login-page")
                         // 로그인 처리 (POST /api/user/login)
                         .loginProcessingUrl("/api/user/login")
-                        // 로그인 처리 후 성공 시 URL
+                        // 로그인 처리 후 성공 시 URL "/" 는 메인페이지
                         .defaultSuccessUrl("/")
                         // 로그인 처리 후 실패 시 URL
                         .failureUrl("/api/user/login-page?error")
